@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- FireBase -->
+    <script src="https://www.gstatic.com/firebasejs/live/3.1/firebase.js"></script>
+
+    <!-- Icons -->
+    <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet" />
+    <meta http-equiv="Permissions-Policy" content="compute-pressure=()" />
+
+    <!-- Title and Styles -->
+    <link rel="icon" type="image/x-icon" href="logo.png" />
+    <link rel="stylesheet" href="another.css" />
+    <title>Gochat😎</title>
+</head>
+
+<body>
+    <div class="content" id="content">
+        <div id="firebaseLoader">
+            <div id="spiral" id="spiral"></div>
+        </div>
+
+        <a onclick="skip()" style="text-decoration: none; display: none" id="btn_img_next_skip">Skip ></a>
+        <div class="status" id="status"></div>
+        <div class="output" id="output" style="text-align: left;"></div>
+        <div class="contain" id="contain" style="display: flex;">
+            <div class="send" style="display: flex" id="send_btn">
+                <div class="microbtn" id="upload_btn">
+                    <i class="bx bx-image-add icon icon_pin" onclick="clickattach()"></i>
+                    <input type="file" name="files[]" id="files" />
+                </div>
+                <input type="text" id="msg" class="input_msg" placeholder="Message" autocomplete="off" />
+                <div class="sendbtn_img" onclick="send()">
+                    <i class="bx bx-send icon send_icon"></i>
+                </div>
+            </div>
+            <div class="overlay" id="overlay">
+                <div class="popup_img_upload" id="popup_img_upload">
+                    <h2 class="head2">Share this Image</h2>
+                    <p>Would you like to share this image</p>
+                    <img id="myimg" width="200px" height="auto" /><br />
+                    <input type="range" id="slider" min="0" max="100" value="20" />
+                    <div id="slider-value">50</div>
+                    <div class="send_pop">
+                        <div class="sendbtn" id="upload" onclick="uploadAndSendImage()">
+                            <i class="bx bx-send icon send_icon"></i>
+                        </div>
+                        <div class="sendbtn" id="cancel" onclick="cancelImage()">
+                            <h2 class="text_cancel_btn">Cancel</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="btnCloseEmer" class="btncldl" onclick="deleteSelectedMessages()" style="display: none;">
+                <i class='bx bx-x icon_close'></i></button>
+            <button id="cancelDel" class="btncldl" onclick="cancelLongPress()" style="display: none;">Cancel</button>
+        </div>
+        <div class="more" id="more">
+            <div class="design"></div>
+        </div>
+        <div class="music" id="music" onclick="showMusic()">
+            <i id="shortCutFullscreen" class="bx bx-fullscreen" onclick="toggleFullscreen(this)"></i>
+        </div>
+        <nav class="menu">
+            <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
+            <label class="menu-open-button" for="menu-open">
+                <span class="lines line-1"></span>
+                <span class="lines line-2"></span>
+                <span class="lines line-3"></span>
+            </label>
+
+            <a href="#" class="menu-item blue"
+                onclick="showPopup('Few things are yet to be completed........ Plz don\'t mind😅', 5)">
+                <i class="bx bx-anchor"></i> </a>
+            <a href="#" class="menu-item green" onclick="openLink()">
+                <i class="bx bx-heart"></i> </a>
+            <a href="#" class="menu-item red"
+                onclick="showPopup('Few things are yet to be completed........ Plz don\'t mind😅', 5)">
+                <i id="setIcon" class="bx bx-cog"></i> </a>
+            <a href="#" class="menu-item purple" onclick="window.open('oneLove.png', '_blank');">
+                <i class="bx bx-image"></i> </a>
+            <a href="#" class="menu-item orange"
+                onclick="showPopup('Few things are yet to be completed........ Plz don\'t mind😅', 5)">
+                <i class="bx bx-star"></i> </a>
+            <a href="#" class="menu-item lightblue"
+                onclick="showPopup('Few things are yet to be completed........ Plz don\'t mind😅', 5)">
+                <i class="bx bx-diamond"></i> </a>
+        </nav>
+    </div>
+    <div id="popup">
+        <p id="popupText" class="back" contenteditable="true"></p>
+    </div>
+    <div class="overlay overlay_img" id="overlay_img">
+        <div class="popup popup_img" id="popup_img">
+            <i class='bx bx-x icon_cut' onclick="document.getElementById('overlay_img').style.display = 'none'"></i>
+            <div class="align_img">
+                <img id="myimg_image" /><br />
+            </div>
+            <div></div>
+        </div>
+    </div>
+    <button id="close-image-btn" style="display: none;" onclick="close_img()">x</button>
+    <div class="loader" id="loaderpop" style="display: none;">
+        <div id="centering">
+            <img style="max-height: 100vh; max-width:100vw;" id="popimg" width="100%" height="100%">
+        </div>
+    </div>
+
+    <script src="updated_copy3.js"></script>
+    <script>
+        (function () {
+            const N = 600; // total dots
+            const SIZE = 400; // SVG px
+            const DOT_RADIUS = 2; // px
+            const MARGIN = 2; // px padding
+            const DURATION = 3; // seconds per pulse cycle
+            const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5)); // 2π/φ²
+            const CENTER = SIZE / 2;
+            const MAX_RADIUS = CENTER - MARGIN - DOT_RADIUS;
+            const svgNS = "http://www.w3.org/2000/svg";
+            // Create SVG root
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("width", SIZE);
+            svg.setAttribute("height", SIZE);
+            svg.setAttribute("viewBox", `0 0 ${SIZE} ${SIZE}`);
+            document.getElementById("spiral").appendChild(svg);
+            // Generate & animate dots
+            for (let i = 0; i < N; i++) {
+                const idx = i + 0.5;
+                const frac = idx / N;
+                const r = Math.sqrt(frac) * MAX_RADIUS;
+                const theta = idx * GOLDEN_ANGLE;
+                const x = CENTER + r * Math.cos(theta);
+                const y = CENTER + r * Math.sin(theta);
+                // Perfect SVG circle
+                const c = document.createElementNS(svgNS, "circle");
+                c.setAttribute("cx", x);
+                c.setAttribute("cy", y);
+                c.setAttribute("r", DOT_RADIUS);
+                svg.appendChild(c);
+                // Radius pulse
+                const animR = document.createElementNS(svgNS, "animate");
+                animR.setAttribute("attributeName", "r");
+                animR.setAttribute(
+                    "values",
+                    `${DOT_RADIUS * 0.5};${DOT_RADIUS * 1.5};${DOT_RADIUS * 0.5}`
+                );
+                animR.setAttribute("dur", `${DURATION}s`);
+                animR.setAttribute("begin", `${frac * DURATION}s`);
+                animR.setAttribute("repeatCount", "indefinite");
+                animR.setAttribute("calcMode", "spline");
+                animR.setAttribute("keySplines", "0.4 0 0.6 1;0.4 0 0.6 1");
+                c.appendChild(animR);
+                // Opacity pulse
+                const animO = document.createElementNS(svgNS, "animate");
+                animO.setAttribute("attributeName", "opacity");
+                animO.setAttribute("values", "0.3;1;0.3");
+                animO.setAttribute("dur", `${DURATION}s`);
+                animO.setAttribute("begin", `${frac * DURATION}s`);
+                animO.setAttribute("repeatCount", "indefinite");
+                animO.setAttribute("calcMode", "spline");
+                animO.setAttribute("keySplines", "0.4 0 0.6 1;0.4 0 0.6 1");
+                c.appendChild(animO);
+            }
+        })();
+
+    </script>
+
+</body>
+
+</html>
